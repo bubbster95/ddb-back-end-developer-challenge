@@ -11,8 +11,6 @@ export default async function heal(id, healAmount) {
     let healAmountParsed = JSON.parse(healAmount)
     let maxHp = JSON.parse(playerData.maxHp)
 
-    console.log("player data: ", hitPoints + healAmount)
-
     if (hitPoints + healAmountParsed <= maxHp) {
         console.log(`Let the healing commence, heal for ${healAmountParsed}`)
         result = updatePlayerData(id, {hitPoints: hitPoints + healAmountParsed})
