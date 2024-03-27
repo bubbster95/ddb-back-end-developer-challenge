@@ -16,33 +16,24 @@ export default async function dealDamage(id, dmgAmount, dmgType) {
 
     defenses.map(def => { // search player defenses for resistance/immunity to damage type
         if (def.type == dmgType) {
-            resistant = (def.defense== 'resistance');
-            immune = (def.defense == 'immunity');
+            resistant = ( def.defense == 'resistance' );
+            immune = ( def.defense == 'immunity' );
         }
     })
+    
+    let finalDmg = dmgAmount; // The amont of damage to hit points after considering tempHitPts
+    if (resistant) finalDmg = Math.round(dmgAmount/2)
+    if (immune) finalDmg = 0
 
-    if (resistant) { 
-        let subtractTempHitPts = Math.round(dmgAmount/2) - playerData.tempHitPt // Divide the amount of damage by 2, then subtract tempHPs
-        let finalDmg = (subtractTempHitPts >= 0) ? subtractTempHitPts : 0 // Don't allow damage amount to drop below 0
-        
-        result = updatePlayerData(id, {
-            hitPoints: playerData.hitPoints - finalDmg,
-            tempHitPts: (playerData.tempHitPts -  Math.round(dmgAmount/2) > 0) ? playerData.tempHitPts -  Math.round(dmgAmount/2) : 0
-        })
-
-    } else if (!immune) {
-        let subtractTempHitPts = dmgAmount - playerData.tempHitPts // Remove the total damage from hp, subtract tempHitPts
-        let finalDmg = (subtractTempHitPts >= 0) ? subtractTempHitPts : 0 // Don't allow damage amount to drop below 0
-
-        result = updatePlayerData(id, {
-            hitPoints: playerData.hitPoints - finalDmg,
-            tempHitPts: (playerData.tempHitPts - dmgAmount > 0) ? playerData.tempHitPts - dmgAmount : 0
-        })
-        
-    } else {
-        result = playerData
-    }
-
+    let subtractTempHitPts = finalDmg - playerData.tempHitPts // Subtract tempHPs
+    finalDmg = (subtractTempHitPts >= 0) ? subtractTempHitPts : 0 // Don't allow damage amount to drop below 0
+    
+    result = updatePlayerData(id, {
+        hitPoints: playerData.hitPoints - finalDmg,
+        tempHitPts: playerData.tempHitPts - dmgAmount > 0 ? playerData.tempHitPts - dmgAmount : 0
+    })
+    
+    console.log(`Deal ${finalDmg} to hp.`)
     return await result 
 }
 

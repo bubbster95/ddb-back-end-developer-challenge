@@ -1,5 +1,8 @@
 
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
+
+import "../../environment.mjs"
+
 const uri = process.env.ATLAS_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -19,12 +22,11 @@ export default async function runMongoDb() {
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    console.log("Successfully connected to Dungeons & Data database!");
   }  catch(e) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Mongo Server Error' });
   }
 }
-runMongoDb().catch(console.dir);
 
  export async function createPlayer(newPlayer) {
   const result = await client.db("dungensAndData").collection("players").insertOne(newPlayer)
@@ -36,24 +38,17 @@ runMongoDb().catch(console.dir);
  export async function getPlayerData(player) {
   const result = client.db("dungensAndData").collection("players").findOne({_id: new ObjectId(player)})
 
-  if (result) {
-    console.log(`Found player in the collection with the name ${player}`)
-    return result
-  } else {
-    return `No player in the collection with the name ${player}`
-  }
+  return (result) ? result : `No player in the collection with the Id ${player}`
 }
 
 export async function updatePlayerData(playerId, update) {
   const result = client.db("dungensAndData").collection("players").updateOne({_id: new ObjectId(playerId)}, {$set: update})
 
-  // console.log(await result)
   return result
 }
 
 export async function deletePlayer(playerId, update) {
   const result = client.db("dungensAndData").collection("players").deleteOne({_id: new ObjectId(playerId)})
 
-  console.log(await result)
   return result
 }
