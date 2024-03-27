@@ -2,7 +2,7 @@ import express from "express";
 
 import "./environment.mjs"
 
-import  runMongoDb, { createPlayer } from "./src/Endpoints/mongo_service.mjs";
+import  runMongoDb, { createPlayer, getPlayerData } from "./src/Endpoints/mongo_service.mjs";
 
 import heal from "./src/Endpoints/heal.mjs";
 import dealDamage from "./src/Endpoints/dealDamage.mjs";
@@ -16,15 +16,21 @@ try {
   runMongoDb()
 
   app.get('/heal', async (req, res) => {
-    let id = req.query.id
-    let heal = req.quert.heal
+    const id = req.query.id
+    const healAmount = req.query.heal
 
-    let result = await heal(id, heal)
+    const result = await heal(id, healAmount)
+
     res.send(`${JSON.stringify(result)}`);
   });
 
   app.get('/damage', async (req, res) => {
-    let result = await dealDamage()
+
+    const id = req.query.id
+    const dmgAmount = req.query.dmgAmount
+    const dmgType = req.query.dmgType
+
+    let result = await dealDamage(id, dmgAmount, dmgType)
     res.send(`${JSON.stringify(result)}`);
   });
 
@@ -79,6 +85,14 @@ try {
     )
     res.send(`${JSON.stringify(result)}`);
   });
+
+  app.get('/', async (req, res) => {
+    let result = await getPlayerData('6603a9f7e36a813ffb594ffd')
+    res.send(`${JSON.stringify(result)}`);
+  });
+
+
+
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
