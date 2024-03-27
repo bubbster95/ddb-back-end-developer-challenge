@@ -4,6 +4,7 @@ import { getPlayerData, updatePlayerData } from "./mongo_service.mjs";
 // Ensure that temporary Hit Points follow the rules: they are not additive, always taking the higher value, and cannot be healed.
 export default async function addTempHitPts(id, tempHPAmount) {
   const playerData = await getPlayerData(id);
+  JSON.parse(tempHPAmount)
 
   let result = updatePlayerData(id, {
     tempHitPts: playerData.tempHitPts + tempHPAmount,

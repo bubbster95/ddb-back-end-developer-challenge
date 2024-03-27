@@ -2,10 +2,7 @@ import express from "express";
 
 import "./environment.mjs";
 
-import {
-  deletePlayer,
-  getPlayerData,
-} from "./src/Endpoints/mongo_service.mjs";
+import { deletePlayer, getPlayerData } from "./src/Endpoints/mongo_service.mjs";
 
 import heal from "./src/Endpoints/heal.mjs";
 import dealDamage from "./src/Endpoints/dealDamage.mjs";
@@ -24,10 +21,15 @@ accepts 2 query strings:
 app.get("/heal", async (req, res) => {
   const id = req.query.id;
   const healAmount = req.query.healAmount;
+  try {
+    const result = await heal(id, healAmount);
 
-  const result = await heal(id, healAmount);
-
-  res.send(`${JSON.stringify(result)}`);
+    res.send(`${JSON.stringify(result)}`);
+  } catch (e) {
+    res
+      .status(500)
+      .send(`Failed to Heal, id: ${id} healAmoun: ${healAmount} Error: ${e}`);
+  }
 });
 
 /* 
@@ -42,10 +44,17 @@ app.get("/damage", async (req, res) => {
   const id = req.query.id;
   const dmgAmount = req.query.dmgAmount;
   const dmgType = req.query.dmgType;
+  try {
+    let result = await dealDamage(id, dmgAmount, dmgType);
 
-  let result = await dealDamage(id, dmgAmount, dmgType);
-
-  res.send(`${JSON.stringify(result)}`);
+    res.send(`${JSON.stringify(result)}`);
+  } catch (e) {
+    res
+      .status(500)
+      .send(
+        `Failed to damage, id: ${id} dmgAmount: ${dmgAmount} dmgType: ${dmgType}, Error: ${e}`
+      );
+  }
 });
 
 /* 
@@ -57,11 +66,18 @@ accepts 2 query strings:
 */
 app.get("/addTempHitPts", async (req, res) => {
   const id = req.query.id;
-  const tempHPAmount = JSON.parse(req.query.tempHPAmount);
+  const tempHPAmount = req.query.tempHPAmount;
+  try {
+    let result = await addTempHitPts(id, tempHPAmount);
 
-  let result = await addTempHitPts(id, tempHPAmount);
-
-  res.send(`${JSON.stringify(result)}`);
+    res.send(`${JSON.stringify(result)}`);
+  } catch (e) {
+    res
+      .status(500)
+      .send(
+        `Failed to add Temp HP, id: ${id} tempHPAmount: ${tempHPAmount}, Error: ${e}`
+      );
+  }
 });
 
 /*
@@ -69,8 +85,12 @@ Delete A player "For testing" Warning: This is a permenant delete!
 */
 app.get("/delete", async (req, res) => {
   let id = req.query.id;
-  let result = await deletePlayer(id);
-  res.send(`${JSON.stringify(result)}`);
+  try {
+    let result = await deletePlayer(id);
+    res.send(`${JSON.stringify(result)}`);
+  } catch (e) {
+    res.status(500).send(`Failed to delete, id: ${id}, Error: ${e}`);
+  }
 });
 
 /*
@@ -78,9 +98,12 @@ Homepage simply shows one player's data
 */
 app.get("/", async (req, res) => {
   let id = req.query.id;
-
-  let result = await getPlayerData(id ? id : "6603a9f7e36a813ffb594ffd");
-  res.send(`${JSON.stringify(result)}`);
+  try {
+    let result = await getPlayerData(id ? id : "6603a9f7e36a813ffb594ffd");
+    res.send(`${JSON.stringify(result)}`);
+  } catch (e) {
+    res.status(500).send(`Failed to get player Data, id: ${id}, Error: ${e}`);
+  }
 });
 
 export default app;
