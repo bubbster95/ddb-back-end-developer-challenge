@@ -1,7 +1,6 @@
+import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
-import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
-
-import "../../environment.mjs"
+import "../../environment.mjs";
 
 const uri = process.env.ATLAS_URI;
 
@@ -11,9 +10,8 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
-
 
 export default async function runMongoDb() {
   try {
@@ -23,34 +21,48 @@ export default async function runMongoDb() {
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Successfully connected to Dungeons & Data database!");
-  }  catch(e) {
-    res.status(500).json({ error: 'Internal Mongo Server Error' });
+  } catch (e) {
+    console.log("Internal Mongo Server Error", e);
   }
 }
 
- export async function createPlayer(newPlayer) {
-  const result = await client.db("dungensAndData").collection("players").insertOne(newPlayer)
+export async function createPlayer(newPlayer) {
+  const result = await client
+    .db("dungensAndData")
+    .collection("players")
+    .insertOne(newPlayer);
 
-  console.log(`New Player created with the following id: ${result.insertedId}`)
-  return result.insertedId
+  console.log(`New Player created with the following id: ${result.insertedId}`);
+  return result.insertedId;
 }
 
- export async function getPlayerData(playerId) {
-  const result = await client.db("dungensAndData").collection("players").findOne({_id: validateId(playerId)})
+export async function getPlayerData(playerId) {
+  const result = await client
+    .db("dungensAndData")
+    .collection("players")
+    .findOne({ _id: validateId(playerId) });
 
-  return (result) ? result : `No player in the collection with the Id ${playerId}`
+  return result
+    ? result
+    : `No player in the collection with the Id ${playerId}`;
 }
 
 export async function updatePlayerData(playerId, update) {
-  const result = client.db("dungensAndData").collection("players").updateOne({_id: validateId(playerId)}, {$set: update})
+  const result = client
+    .db("dungensAndData")
+    .collection("players")
+    .updateOne({ _id: validateId(playerId) }, { $set: update });
 
-  return result
+  return result;
 }
 
 export async function deletePlayer(playerId) {
-  const result = client.db("dungensAndData").collection("players").deleteOne({_id: validateId(playerId)})
+  const result = client
+    .db("dungensAndData")
+    .collection("players")
+    .deleteOne({ _id: validateId(playerId) });
 
-  return await result
+  return await result;
 }
 
-const validateId = (id) => (ObjectId.isValid(id)) ? new ObjectId(id): id
+const validateId = (id) => (ObjectId.isValid(id) ? new ObjectId(id) : id);

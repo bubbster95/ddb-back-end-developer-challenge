@@ -1,8 +1,11 @@
 import express from "express";
 
-import "./environment.mjs"
+import "./environment.mjs";
 
-import  { createPlayer, deletePlayer, getPlayerData } from "./src/Endpoints/mongo_service.mjs";
+import {
+  deletePlayer,
+  getPlayerData,
+} from "./src/Endpoints/mongo_service.mjs";
 
 import heal from "./src/Endpoints/heal.mjs";
 import dealDamage from "./src/Endpoints/dealDamage.mjs";
@@ -18,13 +21,13 @@ accepts 2 query strings:
 * Exp: http://localhost:3000/heal?id=6603a9f7e36a813ffb594ffd&healAmount=2
 */
 
-app.get('/heal', async (req, res) => {
-const id = req.query.id
-const healAmount = req.query.healAmount
+app.get("/heal", async (req, res) => {
+  const id = req.query.id;
+  const healAmount = req.query.healAmount;
 
-const result = await heal(id, healAmount)
+  const result = await heal(id, healAmount);
 
-res.send(`${JSON.stringify(result)}`);
+  res.send(`${JSON.stringify(result)}`);
 });
 
 /* 
@@ -35,14 +38,14 @@ accepts 3 query strings:
 * dmgType (string: "fire")
 * Exp: http://localhost:3000/damage?id=6603a9f7e36a813ffb594ffd&dmgAmount=2&dmgType=slashing
 */
-app.get('/damage', async (req, res) => {
-const id = req.query.id
-const dmgAmount = req.query.dmgAmount
-const dmgType = req.query.dmgType
+app.get("/damage", async (req, res) => {
+  const id = req.query.id;
+  const dmgAmount = req.query.dmgAmount;
+  const dmgType = req.query.dmgType;
 
-let result = await dealDamage(id, dmgAmount, dmgType)
+  let result = await dealDamage(id, dmgAmount, dmgType);
 
-res.send(`${JSON.stringify(result)}`);
+  res.send(`${JSON.stringify(result)}`);
 });
 
 /* 
@@ -52,83 +55,32 @@ accepts 2 query strings:
 * tempHPAmount (number: 2)
 * Exp: http://localhost:3000/addTempHitPts?id=6603a9f7e36a813ffb594ffd&tempHPAmount=2
 */
-app.get('/addTempHitPts', async (req, res) => {
-const id = req.query.id
-const tempHPAmount = JSON.parse(req.query.tempHPAmount)
+app.get("/addTempHitPts", async (req, res) => {
+  const id = req.query.id;
+  const tempHPAmount = JSON.parse(req.query.tempHPAmount);
 
-let result = await addTempHitPts(id, tempHPAmount)
+  let result = await addTempHitPts(id, tempHPAmount);
 
-res.send(`${JSON.stringify(result)}`);
-});
-
-/* 
-Visiting this path creates a new player, Warning: uses a hardcoded set of data
-*/
-app.get('/createPlayer', async (req, res) => {
-let result = await createPlayer({
-    "name": "Clad Ironside",
-    "level": 5,
-    "hitPoints": 25,
-    "maxHp": 25,
-    "tempHitPts": 0,
-    "classes": [
-    {
-    "name":"fighter",
-    "hitDiceValue":10,
-    "classLevel":5
-    }
-    ],
-    "stats":{
-    "strength":15,
-    "dexterity":12,
-    "constitution":14,
-    "intelligence":13,
-    "wisdom":10,
-    "charisma":8
-    },
-    "items":[
-    {
-        "name":"Ioun Stone of Fortitude",
-        "modifier":{
-        "affectedObject":"stats",
-        "affectedValue":"constitution",
-        "value":2
-        }
-    }
-    ],
-    "defenses":[
-    {
-        "type":"fire",
-        "defense":"immunity"
-    },
-    {
-        "type":"slashing",
-        "defense":"resistance"
-    }
-    ]
-}
-)
-res.send(`${JSON.stringify(result)}`);
+  res.send(`${JSON.stringify(result)}`);
 });
 
 /*
-Delete A player "For testing"
+Delete A player "For testing" Warning: This is a permenant delete!
 */
-app.get('/delete', async (req, res) => {
-    let id = req.query.id
-    let result = await deletePlayer(id)
-    res.send(`${JSON.stringify(result)}`);
-    });
+app.get("/delete", async (req, res) => {
+  let id = req.query.id;
+  let result = await deletePlayer(id);
+  res.send(`${JSON.stringify(result)}`);
+});
 
 /*
 Homepage simply shows one player's data
 */
-app.get('/', async (req, res) => {
-    let id = req.query.id
+app.get("/", async (req, res) => {
+  let id = req.query.id;
 
-    let result = await getPlayerData(id ? id : '6603a9f7e36a813ffb594ffd')
-    res.send(`${JSON.stringify(result)}`);
+  let result = await getPlayerData(id ? id : "6603a9f7e36a813ffb594ffd");
+  res.send(`${JSON.stringify(result)}`);
 });
-
 
 export default app;
