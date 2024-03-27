@@ -7,12 +7,18 @@ export default async function heal(id, healAmount) {
     const playerData = await getPlayerData(id);
     let result;
 
-    if (playerData.hitPoints + healAmount <= playerData.maxHp) {
-        console.log(`Let the healing commence, heal for ${healAmount}`)
-        result = updatePlayerData(id, {hitPoints: playerData.hitPoints + healAmount})
-    } else if (playerData.hitPoints + healAmount > playerData.maxHp){
+    let hitPoints = JSON.parse(playerData.hitPoints)
+    let healAmountParsed = JSON.parse(healAmount)
+    let maxHp = JSON.parse(playerData.maxHp)
+
+    console.log("player data: ", hitPoints + healAmount)
+
+    if (hitPoints + healAmountParsed <= maxHp) {
+        console.log(`Let the healing commence, heal for ${healAmountParsed}`)
+        result = updatePlayerData(id, {hitPoints: hitPoints + healAmountParsed})
+    } else if (hitPoints + healAmountParsed > maxHp){
         console.log("I'll heal you! But only to the Max!")
-        result = updatePlayerData(id, {hitPoints: playerData.maxHp})
+        result = updatePlayerData(id, {hitPoints: maxHp})
     } else { 
         console.log("You're already at full")
         result = playerData

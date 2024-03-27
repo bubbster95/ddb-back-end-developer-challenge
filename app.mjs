@@ -2,7 +2,7 @@ import express from "express";
 
 import "./environment.mjs"
 
-import  { createPlayer, getPlayerData } from "./src/Endpoints/mongo_service.mjs";
+import  { createPlayer, deletePlayer, getPlayerData } from "./src/Endpoints/mongo_service.mjs";
 
 import heal from "./src/Endpoints/heal.mjs";
 import dealDamage from "./src/Endpoints/dealDamage.mjs";
@@ -15,12 +15,12 @@ Allows client to heal
 accepts 2 query strings:
 * id (string: "6603a9f7e36a813ffb594ffd")
 * healAmount (number: 2)
-* Exp: http://localhost:3000/heal?id=6603a9f7e36a813ffb594ffd&heal=2
+* Exp: http://localhost:3000/heal?id=6603a9f7e36a813ffb594ffd&healAmount=2
 */
 
 app.get('/heal', async (req, res) => {
 const id = req.query.id
-const healAmount = req.query.heal
+const healAmount = req.query.healAmount
 
 const result = await heal(id, healAmount)
 
@@ -112,11 +112,22 @@ res.send(`${JSON.stringify(result)}`);
 });
 
 /*
+Delete A player "For testing"
+*/
+app.get('/delete', async (req, res) => {
+    let id = req.query.id
+    let result = await deletePlayer(id)
+    res.send(`${JSON.stringify(result)}`);
+    });
+
+/*
 Homepage simply shows one player's data
 */
 app.get('/', async (req, res) => {
-let result = await getPlayerData('6603a9f7e36a813ffb594ffd')
-res.send(`${JSON.stringify(result)}`);
+    let id = req.query.id
+
+    let result = await getPlayerData(id ? id : '6603a9f7e36a813ffb594ffd')
+    res.send(`${JSON.stringify(result)}`);
 });
 
 

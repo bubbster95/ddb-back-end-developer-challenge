@@ -32,23 +32,25 @@ export default async function runMongoDb() {
   const result = await client.db("dungensAndData").collection("players").insertOne(newPlayer)
 
   console.log(`New Player created with the following id: ${result.insertedId}`)
-  return result
+  return result.insertedId
 }
 
- export async function getPlayerData(player) {
-  const result = client.db("dungensAndData").collection("players").findOne({_id: new ObjectId(player)})
+ export async function getPlayerData(playerId) {
+  const result = await client.db("dungensAndData").collection("players").findOne({_id: validateId(playerId)})
 
-  return (result) ? result : `No player in the collection with the Id ${player}`
+  return (result) ? result : `No player in the collection with the Id ${playerId}`
 }
 
 export async function updatePlayerData(playerId, update) {
-  const result = client.db("dungensAndData").collection("players").updateOne({_id: new ObjectId(playerId)}, {$set: update})
+  const result = client.db("dungensAndData").collection("players").updateOne({_id: validateId(playerId)}, {$set: update})
 
   return result
 }
 
-export async function deletePlayer(playerId, update) {
-  const result = client.db("dungensAndData").collection("players").deleteOne({_id: new ObjectId(playerId)})
+export async function deletePlayer(playerId) {
+  const result = client.db("dungensAndData").collection("players").deleteOne({_id: validateId(playerId)})
 
-  return result
+  return await result
 }
+
+const validateId = (id) => (ObjectId.isValid(id)) ? new ObjectId(id): id
