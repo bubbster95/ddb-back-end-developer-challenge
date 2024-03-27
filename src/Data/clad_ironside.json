@@ -2,6 +2,8 @@
   "name": "Clad Ironside",
   "level": 5,
   "hitPoints": 25,
+  "maxHp": 25,
+  "tempHitPts": 0,
   "classes": [
     {
     "name":"fighter",

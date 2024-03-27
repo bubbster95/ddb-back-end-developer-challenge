@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 
 import "./environment.mjs"
 
@@ -15,6 +15,14 @@ try {
 
   runMongoDb()
 
+  /* 
+  Allows client to heal
+  accepts 2 query strings:
+    * id (string: "6603a9f7e36a813ffb594ffd")
+    * healAmount (number: 2)
+    * Exp: http://localhost:3000/heal?id=6603a9f7e36a813ffb594ffd&heal=2
+  */
+
   app.get('/heal', async (req, res) => {
     const id = req.query.id
     const healAmount = req.query.heal
@@ -24,21 +32,43 @@ try {
     res.send(`${JSON.stringify(result)}`);
   });
 
+  /* 
+  Allows client to deal damage
+  accepts 3 query strings:
+    * id (string: "6603a9f7e36a813ffb594ffd")
+    * dmgAmount (number: 2)
+    * dmgType (string: "fire")
+    * Exp: http://localhost:3000/damage?id=6603a9f7e36a813ffb594ffd&dmgAmount=2&dmgType=slashing
+  */
   app.get('/damage', async (req, res) => {
-
     const id = req.query.id
     const dmgAmount = req.query.dmgAmount
     const dmgType = req.query.dmgType
 
     let result = await dealDamage(id, dmgAmount, dmgType)
+
     res.send(`${JSON.stringify(result)}`);
   });
 
+  /* 
+  Allows client to addTempHitPts
+  accepts 2 query strings:
+    * id (string: "6603a9f7e36a813ffb594ffd")
+    * tempHPAmount (number: 2)
+    * Exp: http://localhost:3000/addTempHitPts?id=6603a9f7e36a813ffb594ffd&tempHPAmount=2
+  */
   app.get('/addTempHitPts', async (req, res) => {
-    let result = await addTempHitPts()
+    const id = req.query.id
+    const tempHPAmount = JSON.parse(req.query.tempHPAmount)
+    
+    let result = await addTempHitPts(id, tempHPAmount)
+
     res.send(`${JSON.stringify(result)}`);
   });
 
+  /* 
+   Visiting this path creates a new player, Warning: uses a hardcoded set of data
+  */
   app.get('/createPlayer', async (req, res) => {
     let result = await createPlayer({
       "name": "Clad Ironside",
@@ -86,11 +116,13 @@ try {
     res.send(`${JSON.stringify(result)}`);
   });
 
+  /*
+   Homepage simply shows one player's data
+  */
   app.get('/', async (req, res) => {
     let result = await getPlayerData('6603a9f7e36a813ffb594ffd')
     res.send(`${JSON.stringify(result)}`);
   });
-
 
 
   app.listen(port, () => {
