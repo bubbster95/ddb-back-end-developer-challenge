@@ -1,4 +1,4 @@
-import runMongoDb from "./src/Endpoints/mongo_service.mjs";
+import runMongoDb from "./src/endpoints/mongoService.mjs";
 
 import "./environment.mjs";
 

@@ -2,10 +2,8 @@ import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
 import "../../environment.mjs";
 
-const uri = process.env.ATLAS_URI;
-
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
+const client = new MongoClient(process.env.ATLAS_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -18,9 +16,6 @@ export default async function runMongoDb() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Successfully connected to Dungeons & Data database!");
   } catch (e) {
     console.log("Internal Mongo Server Error", e);
   }
@@ -42,9 +37,7 @@ export async function getPlayerData(playerId) {
     .collection("players")
     .findOne({ _id: validateId(playerId) });
 
-  return result
-    ? result
-    : `No player in the collection with the Id ${playerId}`;
+  return result || `No player in the collection with the Id ${playerId}`;
 }
 
 export async function updatePlayerData(playerId, update) {

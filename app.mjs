@@ -2,11 +2,13 @@ import express from "express";
 
 import "./environment.mjs";
 
-import { deletePlayer, getPlayerData } from "./src/Endpoints/mongo_service.mjs";
+import validateinputs from "./src/validate.mjs";
 
-import heal from "./src/Endpoints/heal.mjs";
-import dealDamage from "./src/Endpoints/dealDamage.mjs";
-import addTempHitPts from "./src/Endpoints/addTempHitPts.mjs";
+import { deletePlayer, getPlayerData } from "./src/endpoints/mongoService.mjs";
+
+import heal from "./src/endpoints/healDamage.mjs";
+import dealDamage from "./src/endpoints/dealDamage.mjs";
+import addTempHP from "./src/Endpoints/addTempHP.mjs";
 
 const app = express();
 
@@ -14,21 +16,22 @@ const app = express();
 Allows client to heal
 accepts 2 query strings:
 * id (string: "6603a9f7e36a813ffb594ffd")
-* healAmount (number: 2)
-* Exp: http://localhost:3000/heal?id=6603a9f7e36a813ffb594ffd&healAmount=2
+* amount (number: 2)
+* Exp: http://localhost:3000/heal?id=6603a9f7e36a813ffb594ffd&amount=2
 */
 
 app.get("/heal", async (req, res) => {
   const id = req.query.id;
-  const healAmount = req.query.healAmount;
-  try {
-    const result = await heal(id, healAmount);
+  const amount = req.query.amount;
 
-    res.send(`${JSON.stringify(result)}`);
+  try {
+    const invalid = validateinputs({ id: id, amount: amount });
+    if (invalid) throw new Error(invalid);
+    else {
+      res.send(`<pre style="padding: 50px 150px;">${JSON.stringify(await heal(id, amount), null, 4)}</pre>`);
+    }
   } catch (e) {
-    res
-      .status(500)
-      .send(`Failed to Heal, id: ${id} healAmoun: ${healAmount} Error: ${e}`);
+    res.status(e.status || 500).send(`Failed to Heal. ${e}`);
   }
 });
 
@@ -36,73 +39,72 @@ app.get("/heal", async (req, res) => {
 Allows client to deal damage
 accepts 3 query strings:
 * id (string: "6603a9f7e36a813ffb594ffd")
-* dmgAmount (number: 2)
-* dmgType (string: "fire")
-* Exp: http://localhost:3000/damage?id=6603a9f7e36a813ffb594ffd&dmgAmount=2&dmgType=slashing
+* amount (number: 2)
+* type (string: "fire")
+* Exp: http://localhost:3000/damage?id=6603a9f7e36a813ffb594ffd&amount=2&type=slashing
 */
 app.get("/damage", async (req, res) => {
   const id = req.query.id;
-  const dmgAmount = req.query.dmgAmount;
-  const dmgType = req.query.dmgType;
+  const amount = req.query.amount;
+  const type = req.query.type;
   try {
-    let result = await dealDamage(id, dmgAmount, dmgType);
-
-    res.send(`${JSON.stringify(result)}`);
+    const invalid = validateinputs({ id: id, amount: amount });
+    if (invalid) throw new Error(invalid);
+    else {
+      res.send(`<pre style="padding: 50px 150px;">${JSON.stringify(await dealDamage(id, amount, type), null, 4)}</pre>`);
+    }
   } catch (e) {
-    res
-      .status(500)
-      .send(
-        `Failed to damage, id: ${id} dmgAmount: ${dmgAmount} dmgType: ${dmgType}, Error: ${e}`
-      );
+    res.status(e.status || 500).send(`Failed to damage. ${e}`);
   }
 });
 
 /* 
-Allows client to addTempHitPts
+Allows client to addTempHP
 accepts 2 query strings:
 * id (string: "6603a9f7e36a813ffb594ffd")
-* tempHPAmount (number: 2)
-* Exp: http://localhost:3000/addTempHitPts?id=6603a9f7e36a813ffb594ffd&tempHPAmount=2
+* amount (number: 2)
+* Exp: http://localhost:3000/addTempHP?id=6603a9f7e36a813ffb594ffd&amount=2
 */
-app.get("/addTempHitPts", async (req, res) => {
+app.get("/addTempHP", async (req, res) => {
   const id = req.query.id;
-  const tempHPAmount = req.query.tempHPAmount;
+  const amount = req.query.amount;
   try {
-    let result = await addTempHitPts(id, tempHPAmount);
-
-    res.send(`${JSON.stringify(result)}`);
+    const invalid = validateinputs({ id: id, amount: amount });
+    if (invalid) throw new Error(invalid);
+    else {
+      res.send(`<pre style="padding: 50px 150px;">${JSON.stringify(await addTempHP(id, amount), null, 4)}</pre>`);
+    }
   } catch (e) {
-    res
-      .status(500)
-      .send(
-        `Failed to add Temp HP, id: ${id} tempHPAmount: ${tempHPAmount}, Error: ${e}`
-      );
+    res.status(e.status || 500).send(`Failed to add Temp HP. ${e}`);
   }
 });
 
 /*
 Delete A player "For testing" Warning: This is a permenant delete!
 */
-app.get("/delete", async (req, res) => {
-  let id = req.query.id;
-  try {
-    let result = await deletePlayer(id);
-    res.send(`${JSON.stringify(result)}`);
-  } catch (e) {
-    res.status(500).send(`Failed to delete, id: ${id}, Error: ${e}`);
-  }
-});
+// app.get("/delete", async (req, res) => {
+//   let id = req.query.id;
+//   try {
+//     let result = await deletePlayer(id);
+//     res.send(`${JSON.stringify(result)}`);
+//   } catch (e) {
+//     res.status(e.status || 500).send(`Failed to delete, id: ${id}, Error: ${e}`);
+//   }
+// });
 
 /*
 Homepage simply shows one player's data
 */
+// TODO: Remove default character, expect an id
 app.get("/", async (req, res) => {
   let id = req.query.id;
   try {
     let result = await getPlayerData(id ? id : "6603a9f7e36a813ffb594ffd");
-    res.send(`${JSON.stringify(result)}`);
+    res.send(`<pre style="padding: 50px 150px;">${JSON.stringify(result, null, 4)}</pre>`);
   } catch (e) {
-    res.status(500).send(`Failed to get player Data, id: ${id}, Error: ${e}`);
+    res
+      .status(e.status || 500)
+      .send(`Failed to get player Data, id: ${id}, Error: ${e}`);
   }
 });
 

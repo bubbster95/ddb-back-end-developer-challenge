@@ -1,40 +1,34 @@
-import { getPlayerData } from "./mongo_service.mjs";
-import { updatePlayerData } from "./mongo_service.mjs";
+import { getPlayerData } from "./mongoService.mjs";
+import { updatePlayerData } from "./mongoService.mjs";
 
 // Implement the ability for clients to deal damage of different types (e.g., bludgeoning, fire) to a player character.
 // Ensure that the API calculates damage while considering character resistances and immunities.
-export default async function dealDamage(id, dmgAmount, dmgType) {
+export default async function dealDamage(id, amount, type) {
   const playerData = await getPlayerData(id);
+  JSON.parse(amount)
 
   let result;
 
-  const defenses = playerData.defenses;
-  let immune = false;
-  let resistant = false;
+  // Search player defenses for resistance/immunity to damage type.
+  let defense = playerData.defenses.find((def) => def.type === type)?.defense;
+  // If immune send response immediately.
+  if (defense === "immunity") {
+    return { res: { text: `Player Character is immune to ${type} damage.` } };
+  }
+  if (defense === "resistance") amount = Math.round(amount / 2);
 
-  defenses.map((def) => {
-    // search player defenses for resistance/immunity to damage type
-    if (def.type == dmgType) {
-      resistant = def.defense == "resistance";
-      immune = def.defense == "immunity";
-    }
-  });
+  let newTempHP = playerData.tempHP - amount; // Subtract damage amount from tempHP.
+  let newHP;
 
-  let finalDmg = dmgAmount; // The amont of damage to hit points after considering tempHitPts
-  if (resistant) finalDmg = Math.round(dmgAmount / 2);
-  if (immune) finalDmg = 0;
+  if (newTempHP < 0) {
+    newHP = playerData.hitPoints + newTempHP;
+    newTempHP = 0;
+  } else {
+    newHP = playerData.hitPoints;
+  }
 
-  let subtractTempHitPts = finalDmg - playerData.tempHitPts; // Subtract tempHPs
-  finalDmg = subtractTempHitPts >= 0 ? subtractTempHitPts : 0; // Don't allow damage amount to drop below 0
+  result = updatePlayerData(id, { hitPoints: newHP, tempHP: newTempHP });
 
-  result = updatePlayerData(id, {
-    hitPoints: playerData.hitPoints - finalDmg,
-    tempHitPts:
-      playerData.tempHitPts - dmgAmount > 0
-        ? playerData.tempHitPts - dmgAmount
-        : 0,
-  });
-
-  console.log(`Deal ${finalDmg} to hp.`);
+  console.log(`Deal ${amount} damage.`);
   return await result;
 }

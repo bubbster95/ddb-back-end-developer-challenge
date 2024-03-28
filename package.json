@@ -1,8 +1,8 @@
 {
   "name": "ddb-back-end-developer-challenge",
   "version": "1.0.0",
-  "description": "### Overview This task focuses on creating an API for managing a player character's Hit Points (HP) within our game. The API will enable clients to perform various operations related to HP, including dealing damage of different types, considering character resistances and immunities, healing, and adding temporary Hit Points. The task requires building a service that interacts with HP data provided in the `briv.json` file and persists throughout the application's lifetime.",
-  "main": "mongo_service.js",
+  "description": "### Overview This task focuses on creating an API for managing a player character's Hit Points (HP) within our game.",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles",
@@ -18,10 +18,11 @@
   "bugs": {
     "url": "https://github.com/bubbster95/ddb-back-end-developer-challenge/issues"
   },
-  "homepage": "https://github.com/bubbster95/ddb-back-end-developer-challenge#readme",
+  "homepage": "https://github.com/bubbster95/ddb-back-end-developer-challenge#app.mjs",
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "mongodb": "^6.5.0",
     "nodemon": "^3.1.0"
   },
   "devDependencies": {
