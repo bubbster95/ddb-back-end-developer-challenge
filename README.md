@@ -42,7 +42,7 @@ What you see here is just an MVP. There is plenty to do that would make this API
 
         ATLAS_URI = mongodb+srv://<username>:<password>@playerinfo.kumbnxf.mongodb.net/
 
-7) Replace `<username>` and `<password>` with your quest username and password. [Contact Will Stiles](maito:Stiles.billy@gmail.com) if you do not have this yet.
+7) Replace `<username>` and `<password>` with your guest username and password. [Contact Will Stiles](maito:Stiles.billy@gmail.com) if you do not have this yet.
 
 8) Once completed the project should be ready to run. Great work! 
 
@@ -51,7 +51,7 @@ The API runs locally on `nodemon` so any file changes will trigger an auto reloa
 
 To start the app simply run.
 
-        $npm start
+        npm start
 
 Once running you can go to [localhost:3000](http://localhost:3000/), where you will see information about our test user "Clad Ironside".
 
