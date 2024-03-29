@@ -32,14 +32,12 @@ What you see here is just an MVP. There is plenty to do that would make this API
 
 5) Create an ENV file.
 
-On Mac:
+   On Mac:
 
-        touch .env
+                touch .env
    
 
-On Windows:
-
-        New-Item -ItemType File -Path .\.env
+        <b>On Windows:</b> Open the project in your code editor of choice. In the root folder, create a new file and name it `.env`
 
 7) Add the following env variable to .env.
 
