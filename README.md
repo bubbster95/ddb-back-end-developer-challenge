@@ -18,7 +18,7 @@ What you see here is just an MVP. There is plenty to do that would make this API
 ### Download and Initialize
 
 1) Open your teminal and navigate to the location where your app folder will be kept using `cd`.
-2) Clone the git repo onto your local machine.
+2) Clone the [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) repo onto your local machine.
 
         git clone https://github.com/bubbster95/ddb-back-end-developer-challenge.git 
 
@@ -26,7 +26,7 @@ What you see here is just an MVP. There is plenty to do that would make this API
 
         cd ddb-back-end-developer-challenge
 
-4) Install project dependencies from Node:
+4) Install project dependencies from [Node](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs):
 
         npm install
 
