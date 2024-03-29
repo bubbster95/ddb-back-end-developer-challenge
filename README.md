@@ -127,7 +127,7 @@ Bonus Endpoints
 
 There are two other endpoints that I left in for ease of testing. 
 
-The first is simply the home page (/). Includ an id in the query string to view a specific player character's data. If left blank the default data is our test user "Clad Ironside".
+The first is simply the home page (/). Include an id in the query string to view a specific player character's data. If left blank the default data is our test user "Clad Ironside".
 
 The second endpoint (/delete) is a little more serious (which is why it is commented out). If passed an id it will permanently delete that player character from the database.
 
