@@ -32,19 +32,22 @@ What you see here is just an MVP. There is plenty to do that would make this API
 
 5) Create an ENV file.
 
-        On Mac:
-        touch .env
+On Mac:
 
-        On Windows:
+        touch .env
+   
+
+On Windows:
+
         New-Item -ItemType File -Path .\.env
 
-6) Add the following env variable to .env.
+7) Add the following env variable to .env.
 
         ATLAS_URI = mongodb+srv://<username>:<password>@playerinfo.kumbnxf.mongodb.net/
 
-7) Replace `<username>` and `<password>` with your guest username and password. [Contact Will Stiles](maito:Stiles.billy@gmail.com) if you do not have this yet.
+8) Replace `<username>` and `<password>` with your guest username and password. [Contact Will Stiles](maito:Stiles.billy@gmail.com) if you do not have this yet.
 
-8) Once completed the project should be ready to run. Great work! 
+9) Once completed the project should be ready to run. Great work! 
 
 ### Running the API
 The API runs locally on `nodemon` so any file changes will trigger an auto reload of the server. This makes running the local server super easy.
