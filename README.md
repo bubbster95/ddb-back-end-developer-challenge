@@ -47,8 +47,8 @@ What you see here is just an MVP. There is plenty to do that would make this API
 
 9) Once completed the project should be ready to run. Great work! 
 
-### Running the API
-The API runs locally on `nodemon` so any file changes will trigger an auto reload of the server. This makes running the local server super easy.
+### Run the API
+The API runs locally on `nodemon` so any file changes will trigger an auto reload of the server.
 
 To start the app simply run.
 
@@ -56,14 +56,14 @@ To start the app simply run.
 
 Once running you can go to [localhost:3000](http://localhost:3000/), where you will see information about our test user "Clad Ironside".
 
-### Testing the API
-Testing the app can be tedious with just a url to work with. So I implimented Jest to test the CRUD functions ensuring they work as expected. Before each test the user "Clad Ironside" has his HP tempHP and maxHp set to an appropriate configuration. The test is then run on the live database and the results are checked for accuracy.
+### Test the API
+Testing the app can be tedious with just a url to work with. To test the CRUD functions I implemented Jest. Before each test, the user "Clad Ironside" has his  HP tempHP and maxHp set to an appropriate configuration. The test is then run on the live database and the results are checked for accuracy.
 
 To use the test suite run
 
         npm test
 
-### Using the API
+### Use the API
 For the sake of simplicity, I used `GET` requests for all of the endpoints in this API. I wanted to focus on the backend and felt as if building a UI was out of scope. Adittionally I wanted to spare the Code reviewrs the trouble of setting up post requests in a software like `Postman`. 
 
 That being said, if I were to create this for a `production ENV` I would use `POST` for all endpoints. I would then send the data thogh the body. This is a much more secure way of sending data to the API. 
