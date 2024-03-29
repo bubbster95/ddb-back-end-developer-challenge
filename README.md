@@ -33,8 +33,8 @@ What you see here is just an MVP. There is plenty to do that would make this API
 5) Create an ENV file.
 
    <b>On Mac:</b>
-
-                touch .env
+   
+           touch .env
    
 
    <b>On Windows:</b> Open the project in your code editor of choice. In the root folder, create a new file and name it `.env`
